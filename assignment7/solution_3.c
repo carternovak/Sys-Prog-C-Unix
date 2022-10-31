@@ -2,82 +2,67 @@
 #include <stdlib.h>
 #include <string.h>
 
-//function to replace string 
-char* replaceAll(const char* string, char *target, char *replacement)
-{
-    char ch;
-    const char *ogstring = string;
-    char *newStr = (char*)malloc(sizeof(char)*100);
-    int i = 0, j = 0, k=0; 
-    int flag = 0, start = 0;
-    
-    while (string[i] != '\0')
-    {
-        if (string[i] == target[j]) 
-        {
-            if (!flag)
-                start = i;
-            j++;
-            if (target[j] == '\0')
-                break;
-            flag = 1;
-        } 
-        else 
-            flag = start = j = 0;
-        i++;
-    }
-    
-    
-    if (target[j] == '\0' && flag)
-    {
-        for (i = 0; i < start; i++)
-        {
-            *(newStr+k++) = string[i];
-        }
+char* replaceAll(const char* string, char *target, char *replacement);
 
-        for (j = 0; j < strlen(replacement); j++) 
-        {
-            *(newStr+k++) = replacement[j];
-            i++;
-        }
-
-        for (j = start + strlen(target); j < strlen(string); j++)
-        {
-            *(newStr+k++) = string[j];
-            i++;
-        }
-
-        *(newStr+k++) = '\0';
-    }else{
-	printf("%s\n", string);
-	printf("Since the target cannot be found in the original string we return the original string itself.\n");
-    }
+int main(void){  
+    	char str[100];
+    	char targetStr[100];
+    	char replacementStr[100];
     
-    return newStr;
+    	printf("Enter a string: ");
+    	scanf(" %[^\n]%*c", str);
+    	
+    	printf("Enter the target: ");
+    	scanf(" %[^\n]%*c", targetStr);
+    	
+    	printf("Enter replacement: ");
+    	scanf(" %[^\n]%*c", replacementStr);
+    
+    	printf("%s\n", replaceAll(str, targetStr, replacementStr));
 }
 
-void main() 
-{ 
-    //variable declaration
-    char ch; 
-    char str[100];
-    char searchStr[100];
-    char replaceStr[100];
-    int i = 0, j = 0; 
-    int flag = 0, start = 0;
+char* replaceAll(const char* string, char *target, char *replacement){
+    	const char *ogstring = string;
+    	char *result = (char*)malloc(sizeof(char)*100);
+    	int i = 0, j = 0, k = 0, temp = 0, begin = 0; 
     
-    //get user input
-    printf("Enter a string: ");
-    scanf(" %[^\n]%*c", str);
+    	while (string[i] != '\0'){
+        	if (string[i] == target[j]) {
+            		if (!temp)
+                		begin = i;
+            		j++;
+            		if (target[j] == '\0')
+                		break;
+            		temp = 1;
+        	}else{ 
+            		temp = 0;
+			begin = 0;
+			j = 0;
+		}
+        	i++;
+    	}
     
-    //get user input
-    printf("Enter the target: ");
-    scanf(" %[^\n]%*c", searchStr);
+    	printf("Output: ");
+    	if (target[j] == '\0' && temp){
+        	for (i = 0; i < begin; i++)
+            		*(result + k++) = string[i];
+
+        	for (j = 0; j < strlen(replacement); j++){
+            		*(result + k++) = replacement[j];
+            		i++;
+        	}
+
+        	for (j = begin + strlen(target); j < strlen(string); j++){
+            		*(result + k++) = string[j];
+            		i++;
+        	}
+
+        	*(result + k++) = '\0';
+    	}else{
+		printf("%s\n", string);
+		printf("Explanation: Since the target cannot be found in the original string we return the original string itself.\n");
+    	}
     
-    //get user input
-    printf("Enter replacement: ");
-    scanf(" %[^\n]%*c", replaceStr);
-    
-    //print the new string
-    printf("%s", replaceAll(str, searchStr, replaceStr));
+    	return result;
 }
+

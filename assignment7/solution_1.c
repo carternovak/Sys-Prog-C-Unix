@@ -1,78 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <string.h>
 
-#define MAX_STR_LEN 1000
-#define MAX_WORD_LEN 100
-
-char** myTokenizer(char* str, const char *delim);
+char ** myTokenizer(char * str, const char * delim);
 
 int main(void){
-    	char input_str[MAX_STR_LEN + 1];
-    	char delimiter[MAX_WORD_LEN + 1];
-    	char** tokens;
-    	int num_tokens;
+        char * string = malloc(500 * sizeof(char *));
+        char * delimiter = malloc(500 * sizeof(char *));
 
-    	printf("Input the string: ");
-    	fgets(input_str, MAX_STR_LEN + 1, stdin);
+        printf("Input the string: ");
+        fgets(string, 500, stdin);
 
-    	printf("Input the delimiter: ");
-    	fgets(delimiter, MAX_WORD_LEN + 1, stdin);
+        printf("Input the delimiter: ");
+        fgets(delimiter, 500, stdin);
 
-    // remove the trailing newline character from the delimiter
-    	//delimiter[strlen(delimiter) - 1] = '\0';
+        char * lowerDelim = delimiter;
 
-    // call myTokenizer to tokenize the string
-    	tokens = myTokenizer(input_str, delimiter);
+        for(int i = 0; i < strlen(lowerDelim); i++)
+                lowerDelim[i] = tolower(lowerDelim[i]);
 
-    // print the tokens
-    	for (num_tokens = 0; tokens[num_tokens] != NULL; num_tokens++) {
-        	printf("%s\n", tokens[num_tokens]);
-    	}
-
-    // free the memory allocated by myTokenizer
-    	free(tokens);
-
-    	return 0;
+        char ** result = myTokenizer(string, lowerDelim);
+	printf("Output: ");
+        if(strcmp(string, *result) == 0)
+                printf("NULL\n");
+        else
+                for(int i = 0; * result[i] != '\0'; i++)
+                        printf("%s\n", result[i]);
 }
 
-char** myTokenizer(char* str, const char *delim) {
-    
-	int i;
-    	int num_tokens = 0;
-    	int token_index = 0;
-    	char* current_token;
-    	char** tokens;
+char ** myTokenizer(char * str, const char * delim){
+        int strLen = strlen(str);
+        int delimLen = strlen(delim);
 
-    // first count how many tokens are in the string
-    	for (i = 0; i < strlen(str); i++) {
-        	if (strchr(delim, str[i]) != NULL) {
-            // found a delimiter, so increment the token counter
-            		num_tokens++;
-        	}
-    	}
+        char ** result = (char **) malloc(500 * (sizeof(char *)));
 
-    // add space for the null terminator at the end of the array
-    	num_tokens++;
+        int a = 0, b = 0, c = 0;
+        int d;
+        int target = 1;
 
-    // allocate space for the array of token strings
-    	tokens = (char**) malloc(num_tokens * sizeof(char*));
+        while(a < strLen){
+                result[a] = (char *) malloc(500 * sizeof(char *));
 
-    // now loop through the string again, extracting each token
-    	current_token = strtok(str, delim);
-    	while (current_token != NULL) {
-        // allocate space for the token string
-        	tokens[token_index] = (char*) malloc((strlen(current_token) + 1) * sizeof(char));
-        	strcpy(tokens[token_index], current_token);
-        	token_index++;
+                for(d = 0; d < delimLen - 1; d++)
+                        if(tolower(delim[d] != tolower(str[a + d])))
+                                target = 0;
 
-        // get the next token
-        	current_token = strtok(NULL, delim);
-    	}
+                if(target == 1){
+                        c +=  1;
+                        b = 0;
+                        result[c][b] = str[a];
+                        a += (delimLen - 1);
+                }else{
+                        result[c][b] = str[a];
+                        a += 1;
+                        b += 1;
+                }
 
-    // add the null terminator at the end of the array
-    	tokens[token_index] = NULL;
+                target = 1;
+        }
 
-    	return tokens;
+        return result;
+
 }
